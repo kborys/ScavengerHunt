@@ -1,9 +1,10 @@
+import { LatLng } from 'leaflet';
+
 export interface Waypoint {
   id: string;
   name: string;
   description: string;
-  latitude: number;
-  longitude: number;
+  position: LatLng;
   order: number;
   isCompleted: boolean;
-} 
+}

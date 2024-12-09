@@ -1,3 +1,4 @@
+import { LatLng } from 'leaflet';
 import { Quest } from './Quest';
 
 export const mockQuests: Quest[] = [
@@ -15,21 +16,19 @@ export const mockQuests: Quest[] = [
         id: 'w1',
         name: 'Rynek Główny',
         description: 'Znajdź fontannę na środku rynku',
-        latitude: 52.2297,
-        longitude: 21.0122,
+        position: new LatLng(52.2297, 21.0122),
         order: 1,
-        isCompleted: false
+        isCompleted: false,
       },
       {
         id: 'w2',
         name: 'Kościół Mariacki',
         description: 'Posłuchaj hejnału z wieży',
-        latitude: 52.2299,
-        longitude: 21.0125,
+        position: new LatLng(52.2299, 21.0125),
         order: 2,
-        isCompleted: false
-      }
-    ]
+        isCompleted: false,
+      },
+    ],
   },
   {
     id: '2',
@@ -45,20 +44,18 @@ export const mockQuests: Quest[] = [
         id: 'w3',
         name: 'Park Łazienkowski',
         description: 'Znajdź pomnik Chopina',
-        latitude: 52.2151,
-        longitude: 21.0353,
+        position: new LatLng(52.2151, 21.0353),
         order: 1,
-        isCompleted: false
+        isCompleted: false,
       },
       {
         id: 'w4',
         name: 'Park Ujazdowski',
         description: 'Odwiedź starą fontannę',
-        latitude: 52.2229,
-        longitude: 21.0279,
+        position: new LatLng(52.2229, 21.0279),
         order: 2,
-        isCompleted: false
-      }
-    ]
-  }
-]; 
+        isCompleted: false,
+      },
+    ],
+  },
+];

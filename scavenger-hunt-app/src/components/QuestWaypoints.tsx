@@ -1,15 +1,11 @@
-import { Marker, Popup } from 'react-leaflet';
-import { LatLng } from 'leaflet';
+import { Marker, Polyline, Popup } from 'react-leaflet';
+import L, { LatLngExpression } from 'leaflet';
 import { useQuest } from '../contexts/QuestContext';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { divIcon } from 'leaflet';
+import { RouteService } from '../services/routeService';
 
 const COMPLETION_RADIUS = 20; // 20 metrów
-
-function calculateDistance(point1: LatLng, point2: [number, number]): number {
-  const dist = point1.distanceTo(new LatLng(point2[0], point2[1]));
-  return dist;
-}
 
 interface QuestWaypointsProps {
   userPosition: L.LatLng | null;
@@ -19,6 +15,32 @@ export function QuestWaypoints({ userPosition }: QuestWaypointsProps) {
   const { activeQuest, setActiveQuest } = useQuest();
   const [selectedWaypoint, setSelectedWaypoint] = useState<string | null>(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [route, setRoute] = useState<LatLngExpression[]>([]);
+
+  useEffect(() => {
+    const getRouteWaypoints = async () => {
+      const nextWaypoint = activeQuest?.waypoints
+        .filter((wp) => !wp.isCompleted)
+        .sort((a, b) => a.order - b.order)[0];
+
+      if (
+        userPosition === null ||
+        nextWaypoint === null ||
+        nextWaypoint === undefined
+      ) {
+        return;
+      }
+
+      const routePolyline = await RouteService.getRoutePolyline(
+        userPosition,
+        nextWaypoint.position,
+      );
+
+      setRoute(routePolyline);
+    };
+
+    getRouteWaypoints();
+  }, [userPosition, activeQuest?.waypoints]);
 
   if (!activeQuest || !userPosition) return null;
 
@@ -37,10 +59,7 @@ export function QuestWaypoints({ userPosition }: QuestWaypointsProps) {
   const nearbyWaypoints = activeQuest.waypoints.filter(
     (waypoint) =>
       !waypoint.isCompleted &&
-      calculateDistance(userPosition, [
-        waypoint.latitude,
-        waypoint.longitude,
-      ]) <= COMPLETION_RADIUS,
+      userPosition.distanceTo(waypoint.position) <= COMPLETION_RADIUS,
   );
 
   const createWaypointIcon = (order: number, isCompleted: boolean) => {
@@ -56,6 +75,8 @@ export function QuestWaypoints({ userPosition }: QuestWaypointsProps) {
 
   return (
     <>
+      {route && <Polyline positions={route} />}
+
       {nearbyWaypoints.length > 0 && (
         <div className="waypoint-notification">
           {nearbyWaypoints.map((waypoint) => (
@@ -77,7 +98,7 @@ export function QuestWaypoints({ userPosition }: QuestWaypointsProps) {
       {activeQuest.waypoints.map((waypoint) => (
         <Marker
           key={waypoint.id}
-          position={[waypoint.latitude, waypoint.longitude]}
+          position={waypoint.position}
           icon={createWaypointIcon(waypoint.order, waypoint.isCompleted)}
         >
           <Popup>
