@@ -4,6 +4,8 @@ import { useQuest } from '../contexts/QuestContext';
 import { useEffect, useState } from 'react';
 import { divIcon } from 'leaflet';
 import { RouteService } from '../services/routeService';
+import { QuestService } from '../services/questService';
+import { Quest } from '../models/Quest';
 
 const COMPLETION_RADIUS = 20; // 20 metrów
 
@@ -44,14 +46,14 @@ export function QuestWaypoints({ userPosition }: QuestWaypointsProps) {
 
   if (!activeQuest || !userPosition) return null;
 
-  const handleCompleteWaypoint = (waypointId: string) => {
+  const handleCompleteWaypoint = async (waypointId: string) => {
     if (!activeQuest) return;
 
-    const updatedWaypoints = activeQuest.waypoints.map((wp) =>
-      wp.id === waypointId ? { ...wp, isCompleted: true } : wp,
+    const updatedQuest = await QuestService.completeWaypoint(
+      activeQuest.id,
+      waypointId,
     );
-
-    setActiveQuest({ ...activeQuest, waypoints: updatedWaypoints });
+    setActiveQuest(updatedQuest as Quest);
     setShowConfirmation(false);
     setSelectedWaypoint(null);
   };

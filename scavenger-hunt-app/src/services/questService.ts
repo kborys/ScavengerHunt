@@ -1,64 +1,63 @@
 import { Quest } from '../models/Quest';
-import { mockQuests } from '../models/mockData';
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const API_BASE_URL = 'http://localhost:5062'; // Zaktualizuj z odpowiednią bazową URL aplikacji .NET
 
 export class QuestService {
   static async getAllQuests(): Promise<Quest[]> {
-    await delay(800);
-    return mockQuests;
+    const response = await fetch(`${API_BASE_URL}/quests`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch quests');
+    }
+    return response.json();
   }
 
   static async getQuestById(id: string): Promise<Quest | undefined> {
-    await delay(500);
-    return mockQuests.find((quest) => quest.id === id);
+    const response = await fetch(`${API_BASE_URL}/quests/${id}`);
+    if (!response.ok) {
+      throw new Error(`Quest with ID ${id} not found`);
+    }
+    return response.json();
   }
 
   static async updateQuestStatus(
     questId: string,
     isCompleted: boolean,
   ): Promise<Quest | undefined> {
-    await delay(300);
-    const questIndex = mockQuests.findIndex((quest) => quest.id === questId);
+    const response = await fetch(`${API_BASE_URL}/quests/${questId}/status`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ isCompleted }),
+    });
 
-    if (questIndex === -1) return undefined;
+    if (!response.ok) {
+      throw new Error(`Failed to update quest status for ID ${questId}`);
+    }
 
-    mockQuests[questIndex] = {
-      ...mockQuests[questIndex],
-      isCompleted,
-    };
-
-    return mockQuests[questIndex];
+    return response.json();
   }
 
-  static async updateWaypointStatus(
+  static async completeWaypoint(
     questId: string,
     waypointId: string,
-    isCompleted: boolean,
   ): Promise<Quest | undefined> {
-    await delay(300);
-    const questIndex = mockQuests.findIndex((quest) => quest.id === questId);
-
-    if (questIndex === -1) return undefined;
-
-    const quest = mockQuests[questIndex];
-    const waypointIndex = quest.waypoints.findIndex(
-      (wp) => wp.id === waypointId,
+    const response = await fetch(
+      `${API_BASE_URL}/quests/${questId}/waypoints/${waypointId}/complete`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
     );
 
-    if (waypointIndex === -1) return undefined;
+    if (!response.ok) {
+      throw new Error(
+        `Failed to update waypoint status for ID ${waypointId} in quest ${questId}`,
+      );
+    }
 
-    const updatedWaypoints = [...quest.waypoints];
-    updatedWaypoints[waypointIndex] = {
-      ...updatedWaypoints[waypointIndex],
-      isCompleted,
-    };
-
-    mockQuests[questIndex] = {
-      ...quest,
-      waypoints: updatedWaypoints,
-    };
-
-    return mockQuests[questIndex];
+    return response.json();
   }
 }
