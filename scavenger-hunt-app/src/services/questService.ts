@@ -1,6 +1,6 @@
 import { Quest } from '../models/Quest';
 
-const API_BASE_URL = 'http://localhost:5062'; // Zaktualizuj z odpowiednią bazową URL aplikacji .NET
+const API_BASE_URL = 'http://192.168.100.10:5062';
 
 export class QuestService {
   static async getAllQuests(): Promise<Quest[]> {

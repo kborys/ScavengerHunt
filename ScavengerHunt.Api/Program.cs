@@ -2,6 +2,11 @@ using ScavengerHunt.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Listen(System.Net.IPAddress.Any, 5062); // Bindujemy się do wszystkich, żeby móc łatwo zmienić środowisko
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>

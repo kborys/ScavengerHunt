@@ -17,6 +17,14 @@
   right: 20px;
 }
 
+.btn--follow {
+  background-color: white;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+}
+
 .btn--waypoint {
   background-color: #27ae60;
   color: white;
@@ -58,6 +66,31 @@
   padding: 8px 16px;
   font-size: 14px;
   transition: background-color 0.2s;
+}
+
+.btn--reenable-following {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+  position: fixed;
+  bottom: 80px; /* Ustawienie w odpowiedniej pozycji */
+  right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s;
+}
+
+.btn--reenable-following:hover {
+  background-color: #2980b9;
+}
+
+.btn--reenable-following svg {
+  width: 20px;
+  height: 20px;
 }
 
 .btn--start-quest:hover {

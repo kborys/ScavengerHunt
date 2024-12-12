@@ -16,18 +16,33 @@ import { QuestWaypoints } from './components/QuestWaypoints';
 function App() {
   const [position, setPosition] = useState<L.LatLng | null>(null);
   const [isQuestsOpen, setIsQuestsOpen] = useState(false);
+  const [isFollowing, setIsFollowing] = useState<boolean>(true);
 
   function LocationMarker() {
     const map = useMapEvents({});
 
     useEffect(() => {
       map
-        .locate({ enableHighAccuracy: true, watch: true })
+        .locate({ enableHighAccuracy: false, watch: true })
         .on('locationfound', function (e: L.LocationEvent) {
-          map.flyTo(e.latlng, map.getZoom());
           setPosition(e.latlng);
         });
     }, [map]);
+
+    useEffect(() => {
+      if (position === null || !isFollowing) return;
+
+      const timeoutId = setTimeout(() => {
+        if (
+          map.getCenter().lat !== position.lat ||
+          map.getCenter().lng !== position.lng
+        ) {
+          map.setView(position);
+        }
+      }, 500);
+
+      return () => clearTimeout(timeoutId); // Czyszczenie timeoutu
+    }, [position]);
 
     const createLocationIcon = () => {
       return divIcon({
@@ -52,8 +67,8 @@ function App() {
     <QuestProvider>
       <div className="app-container">
         <MapContainer
+          zoom={20}
           center={[52.2297, 21.0122]}
-          zoom={13}
           className="map-container"
         >
           <TileLayer
@@ -69,6 +84,13 @@ function App() {
           onClick={() => setIsQuestsOpen(true)}
         >
           Pokaż questy
+        </button>
+
+        <button
+          className="btn btn--follow"
+          onClick={() => setIsFollowing(!isFollowing)}
+        >
+          {isFollowing ? 'Nie śledź' : 'Śledź'}
         </button>
 
         {isQuestsOpen && (

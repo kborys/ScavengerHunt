@@ -1,5 +1,5 @@
 import { Marker, Polyline, Popup } from 'react-leaflet';
-import L, { LatLngExpression } from 'leaflet';
+import { LatLng, LatLngExpression } from 'leaflet';
 import { useQuest } from '../contexts/QuestContext';
 import { useEffect, useState } from 'react';
 import { divIcon } from 'leaflet';
@@ -10,7 +10,7 @@ import { Quest } from '../models/Quest';
 const COMPLETION_RADIUS = 20; // 20 metrów
 
 interface QuestWaypointsProps {
-  userPosition: L.LatLng | null;
+  userPosition: LatLng | null;
 }
 
 export function QuestWaypoints({ userPosition }: QuestWaypointsProps) {

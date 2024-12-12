@@ -1,0 +1,16 @@
+{
+  "name": "Scavenger Hunt",
+  "short_name": "Hunt",
+  "description": "A scavenger hunt app that guides users through quests and waypoints.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3498db",
+  "icons": [
+    {
+      "src": "scavenger-hunt.svg",
+      "type": "image/svg+xml"
+    }
+  ],
+  "orientation": "portrait"
+}
